@@ -57,7 +57,7 @@ public class ArbolB {
     }
 
     private Libro buscarLibroPorISBN(String ISBN) {
-        return buscarLibroPorISBN(arbol.raiz, ISBN);
+        return buscarLibroPorISBN(this.raiz, ISBN);
     }
 
     private Libro buscarLibroPorISBN(Nodo nodo, String ISBN) {
