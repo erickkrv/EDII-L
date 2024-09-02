@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62c499c1-9405-489b-80db-283e3116f60f" name="Changes" comment="solucion buscarISBN">
+    <list default="true" id="62c499c1-9405-489b-80db-283e3116f60f" name="Changes" comment="solucion errores de inserción // incompleto">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ArbolB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ArbolB.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Libro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Libro.java" afterDir="false" />
@@ -58,7 +58,9 @@
       <option name="presentableId" value="Default" />
       <updated>1725208735609</updated>
       <workItem from="1725208736707" duration="7483000" />
-      <workItem from="1725238470794" duration="5813000" />
+      <workItem from="1725238470794" duration="11988000" />
+      <workItem from="1725303194223" duration="165000" />
+      <workItem from="1725306025886" duration="1218000" />
     </task>
     <task id="LOCAL-00001" summary="Creación">
       <option name="closed" value="true" />
@@ -84,7 +86,15 @@
       <option name="project" value="LOCAL" />
       <updated>1725238525783</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="solucion errores de inserción // incompleto">
+      <option name="closed" value="true" />
+      <created>1725244399360</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1725244399360</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -105,16 +115,16 @@
     <MESSAGE value="Creación" />
     <MESSAGE value="intento" />
     <MESSAGE value="solucion buscarISBN" />
-    <option name="LAST_COMMIT_MESSAGE" value="solucion buscarISBN" />
+    <MESSAGE value="solucion errores de inserción // incompleto" />
+    <option name="LAST_COMMIT_MESSAGE" value="solucion errores de inserción // incompleto" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <condition expression="linea.equals(&quot;DELETE;{\&quot;isbn\&quot;:\&quot;17798233\&quot;}&quot;);" language="JAVA" mode="CODE_FRAGMENT" />
           <url>file://$PROJECT_DIR$/src/main/java/org/example/Main.java</url>
-          <line>72</line>
-          <option name="timeStamp" value="25" />
+          <line>94</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

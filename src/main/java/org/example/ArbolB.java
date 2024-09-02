@@ -39,7 +39,7 @@ public class ArbolB {
         }
         return null;
     }
-    public void eliminar(int ISBN) {
+    public void eliminar(long ISBN) {
         // Buscar el libro en el árbol por ISBN
         Libro libro = buscarLibroPorISBN(ISBN);
         if (libro == null) {
@@ -56,11 +56,15 @@ public class ArbolB {
         }
     }
 
-    private Libro buscarLibroPorISBN(int ISBN) {
-        return buscarLibroPorISBN(this.raiz, ISBN);
+    private Libro buscarLibroPorISBN(long ISBN) {
+        if(raiz != null){
+            return buscarLibroPorISBN(this.raiz, ISBN);
+        }else{
+            return null;
+        }
     }
 
-    private Libro buscarLibroPorISBN(Nodo nodo, int ISBN) {
+    private Libro buscarLibroPorISBN(Nodo nodo, long ISBN) {
         int i = 0;
         while (i < nodo.libros.size() && ISBN > nodo.libros.get(i).getISBN()) {
             i++;
@@ -76,36 +80,34 @@ public class ArbolB {
 
         return buscarLibroPorISBN(nodo.hijos.get(i), ISBN);
     }
-    public boolean arbolValido(){
-        if(raiz == null){
-            return true;
-        }
-        return raiz.nodoValido();
-    }
     public void actualizarLibro(JSONObject json) {
-        int ISBN = json.getInt("isbn");
-        Nodo nodo = raiz.BuscarNodo(new Libro(ISBN, "", "", 0, 0));
-        if (nodo != null) {
-            for (int i = 0; i < nodo.libros.size(); i++) {
-                Libro libro = nodo.libros.get(i);
-                if (libro.getISBN() == ISBN) {
-                    if (json.has("name")) {
-                        libro.setTitulo(json.getString("name"));
+        long ISBN = json.getLong("isbn");
+        if(raiz != null){
+            Nodo nodo = raiz.BuscarNodo(new Libro(ISBN, "", "", 0, 0));
+            if (nodo != null) {
+                for (int i = 0; i < nodo.libros.size(); i++) {
+                    Libro libro = nodo.libros.get(i);
+                    if (libro.getISBN() == ISBN) {
+                        if (json.has("name")) {
+                            libro.setTitulo(json.getString("name"));
+                        }
+                        if (json.has("author")) {
+                            libro.setAutor(json.getString("author"));
+                        }
+                        if (json.has("price")) {
+                            libro.setPrecio(json.getDouble("price"));
+                        }
+                        if (json.has("quantity")) {
+                            libro.setStock(json.getInt("quantity"));
+                        }
+                        break;
                     }
-                    if (json.has("author")) {
-                        libro.setAutor(json.getString("author"));
-                    }
-                    if (json.has("price")) {
-                        libro.setPrecio(json.getDouble("price"));
-                    }
-                    if (json.has("quantity")) {
-                        libro.setStock(json.getInt("quantity"));
-                    }
-                    break;
                 }
+            }else{
+                System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque no fue encontrado.");
             }
         }else{
-            System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque no fue encontrado.");
+            System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque el árbol está vacío.");
         }
     }
 

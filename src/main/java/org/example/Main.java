@@ -77,7 +77,7 @@ public class Main {
                             JSONObject json = new JSONObject(datos);
                             //Crear libro
                             Libro libro = new Libro(
-                                    json.getInt("isbn"),
+                                    json.getLong("isbn"),
                                     json.getString("name"),
                                     json.getString("author"),
                                     // json.getString("category"),
@@ -92,7 +92,7 @@ public class Main {
                             String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
                             //Eliminar libro del árbol
-                            arbol.eliminar(json.getInt("isbn"));
+                            arbol.eliminar(json.getLong("isbn"));
                         }
                         //Si la línea comienza con un PATCH
                         if(linea.startsWith("PATCH;")){

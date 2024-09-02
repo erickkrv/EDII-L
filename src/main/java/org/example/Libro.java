@@ -1,14 +1,14 @@
 package org.example;
 
 public class Libro{
-    private int ISBN;
+    private long ISBN;
     private String titulo;
     private String autor;
     private String categoria;
     private double precio;
     private int stock;
 
-    public Libro(int ISBN, String titulo, String autor, double precio, int stock) {
+    public Libro(long ISBN, String titulo, String autor, double precio, int stock) {
         this.ISBN = ISBN;
         this.titulo = titulo;
         this.autor = autor;
@@ -17,7 +17,7 @@ public class Libro{
         this.stock = stock;
     }
     //Gets y sets
-    public int getISBN() {
+    public long getISBN() {
         return ISBN;
     }
     public void setISBN(int ISBN) {
