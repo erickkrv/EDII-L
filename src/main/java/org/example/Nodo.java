@@ -46,11 +46,11 @@ public class Nodo {
     }
     public Nodo BuscarNodo(Libro libro){
         int i = 0;
-        String ISBN = libro.getISBN();
-        while(i < libros.size() && ISBN.compareTo(libros.get(i).getISBN()) > 0){
+        int ISBN = libro.getISBN();
+        while(i < libros.size() && ISBN > libros.get(i).getISBN()){
             i++;
         }
-        if(i < libros.size() && ISBN.compareTo(libros.get(i).getISBN()) == 0){
+        if(i < libros.size() && libros.get(i).getISBN() == ISBN){
             return this;
         }
         if(IsLeaf){
@@ -97,13 +97,13 @@ public class Nodo {
     private void InsertarLleno(Libro libro){
         int i = libros.size() - 1;
         if(IsLeaf){
-            while(i >= 0 && libros.get(i).getISBN().compareTo(libro.getISBN()) > 0){
+            while(i >= 0 && libros.get(i).getISBN() > libro.getISBN()){
                 i--;
             }
             libros.add(i + 1, libro);
         }
         else{
-            while(i >= 0 && libros.get(i).getISBN().compareTo(libro.getISBN()) > 0){
+            while(i >= 0 && libros.get(i).getISBN() > libro.getISBN()){
                 i--;
             }
             i++;
@@ -163,13 +163,13 @@ public class Nodo {
     private void InsertarNoLleno(Libro libro){
         int i =libros.size() - 1;
         if(IsLeaf){
-            while(i >= 0 && libros.get(i).getISBN().compareTo(libro.getISBN()) > 0){
+            while(i >= 0 && libros.get(i).getISBN() > libro.getISBN()){
                 i--;
             }
             libros.add(i + 1, libro);
         }
         else{
-            while(i >= 0 && libros.get(i).getISBN().compareTo(libro.getISBN()) > 0){
+            while(i >= 0 && libros.get(i).getISBN() > libro.getISBN()){
                 i--;
             }
             i++;
@@ -184,7 +184,7 @@ public class Nodo {
     public void Eliminar(Libro libro) {
         int idx = encontrarLibro(libro);
 
-        if (idx < libros.size() && libros.get(idx).getISBN().compareTo(libro.getISBN()) == 0) {
+        if (idx < libros.size() && libros.get(idx).getISBN() == libro.getISBN()) {
             if (IsLeaf) {
                 EliminarHoja(idx);
             } else {
@@ -212,7 +212,7 @@ public class Nodo {
 
     private int encontrarLibro(Libro libro){
         int idx = 0;
-        while(idx < libros.size() && libros.get(idx).getISBN().compareTo(libro.getISBN()) < 0){
+        while(idx < libros.size() && libros.get(idx).getISBN() < libro.getISBN()){
             idx++;
         }
         return idx;
@@ -283,7 +283,7 @@ public class Nodo {
             hijo.hijos.add(0, hermano.hijos.get(hermano.hijos.size() - 1));
         }
         libros.set(idx - 1, hermano.libros.get(hermano.libros.size() - 1));
-        hermano.hijos.remove(hermano.hijos.size() - 1);
+        hermano.libros.remove(hermano.libros.size() - 1);
 
         if(!hermano.IsLeaf){
             hermano.libros.remove(hermano.libros.size() - 1);
@@ -298,9 +298,9 @@ public class Nodo {
             hijo.hijos.add(hermano.hijos.get(0));
         }
         libros.set(idx, hermano.libros.get(0));
-        hermano.hijos.remove(0);
+        hermano.libros.remove(0);
         if(!hermano.IsLeaf){
-            hermano.libros.remove(0);
+            hermano.hijos.remove(0);
         }
     }
     private void fusionar(int idx){
@@ -321,7 +321,7 @@ public class Nodo {
             return false;
         }
         for(int i = 1; i < libros.size(); i++){
-            if(libros.get(i-1).getISBN().compareTo(libros.get(i).getISBN()) > 0){
+            if(libros.get(i-1).getISBN() >= libros.get(i).getISBN()){
                 return false;
             }
         }
@@ -333,10 +333,10 @@ public class Nodo {
                 return false;
             }
             for(int i = 0; i < hijos.size(); i++){
-                if(i > 0 && hijos.get(i).libros.get(0).getISBN().compareTo(libros.get(i - 1).getISBN()) > 0){
+                if(i > 0 && libros.get(i).getISBN() >= hijos.get(i).libros.get(0).getISBN()){
                     return false;
                 }
-                if(i < hijos.size() - 1 && hijos.get(i).libros.get(hijos.get(i).libros.size() - 1).getISBN().compareTo(libros.get(i).getISBN()) < 0){
+                if(i < hijos.size() - 1 && libros.get(i).getISBN() <= hijos.get(i).libros.get(hijos.get(i).libros.size() - 1).getISBN()){
                     return false;
                 }
             }

@@ -1,14 +1,14 @@
 package org.example;
 
-public class Libro implements Comparable<Libro>{
-    private String ISBN;
+public class Libro{
+    private int ISBN;
     private String titulo;
     private String autor;
     private String categoria;
     private double precio;
     private int stock;
 
-    public Libro(String ISBN, String titulo, String autor, double precio, int stock) {
+    public Libro(int ISBN, String titulo, String autor, double precio, int stock) {
         this.ISBN = ISBN;
         this.titulo = titulo;
         this.autor = autor;
@@ -17,10 +17,10 @@ public class Libro implements Comparable<Libro>{
         this.stock = stock;
     }
     //Gets y sets
-    public String getISBN() {
+    public int getISBN() {
         return ISBN;
     }
-    public void setISBN(String ISBN) {
+    public void setISBN(int ISBN) {
         this.ISBN = ISBN;
     }
     public String getTitulo() {
@@ -53,9 +53,5 @@ public class Libro implements Comparable<Libro>{
     public String toString() {
         return "{\"isbn\":"  + "\"" + ISBN + "\"" + ",\"name\":" + "\"" + titulo +"\"" + ",\"author\":" + "\"" + autor + "\"" +
                 ",\"category\":" + "\"" + categoria + "\"" + ",\"price\":" + "\"" + precio + "\"" + ",\"quantity\":" + "\"" + stock + "\"}";
-    }
-    @Override
-    public int compareTo(Libro o) {
-        return this.ISBN.compareTo(o.ISBN);
     }
 }

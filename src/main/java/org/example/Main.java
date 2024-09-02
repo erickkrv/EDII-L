@@ -7,6 +7,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.List;
 import java.util.Scanner;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -16,7 +17,6 @@ public class Main {
     public static void main(String[] args) {
         //Escáner de texto
         Scanner scanner = new Scanner(System.in);
-
         arbol = new ArbolB(5);
         //Menú
         while(true){
@@ -48,6 +48,7 @@ public class Main {
         }
     }
     private static void importarLibros(){
+        String ultimaLinea = "";
         //Crear un JFileChooser
         JFileChooser archivo = new JFileChooser();
         //Filtro para archivos CSV
@@ -66,7 +67,9 @@ public class Main {
                     //Leer archivo línea por línea
                     String linea;
                     while((linea = br.readLine()) != null){
+                        ultimaLinea = linea;
                         //Si la linea comienza con un INSERT
+
                         if(linea.startsWith("INSERT;")){
                             //Extraer datos del JSON
                             String datos = linea.substring(7).trim();
@@ -74,7 +77,7 @@ public class Main {
                             JSONObject json = new JSONObject(datos);
                             //Crear libro
                             Libro libro = new Libro(
-                                    json.getString("isbn"),
+                                    json.getInt("isbn"),
                                     json.getString("name"),
                                     json.getString("author"),
                                     // json.getString("category"),
@@ -89,7 +92,7 @@ public class Main {
                             String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
                             //Eliminar libro del árbol
-                            arbol.eliminar(json.getString("isbn"));
+                            arbol.eliminar(json.getInt("isbn"));
                         }
                         //Si la línea comienza con un PATCH
                         if(linea.startsWith("PATCH;")){
@@ -103,13 +106,20 @@ public class Main {
                             String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
                             //Buscar libro en el árbol
-                            arbol.buscarLibro(json.getString("name"));
+                            List<Libro> libros = arbol.buscarLibro(json.getString("name"));
+                            //Imprimir libros encontrados
+                            for(Libro libro : libros){
+                                System.out.println(libro);
+                            }
+                            if(libros.isEmpty()){
+                                System.out.println("No se encontraron libros con el nombre " + json.getString("name"));
+                            }
                         }
                     }
                 }
                 System.out.println("CSV importado correctamente");
             } catch (Exception e){
-                System.err.println("Error al importar los libros: " + e.getMessage());
+                System.err.println("Error al importar los libros: " + e.getMessage() + " en la línea: " + ultimaLinea);
             }
         }
     }

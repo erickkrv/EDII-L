@@ -39,7 +39,7 @@ public class ArbolB {
         }
         return null;
     }
-    public void eliminar(String ISBN) {
+    public void eliminar(int ISBN) {
         // Buscar el libro en el árbol por ISBN
         Libro libro = buscarLibroPorISBN(ISBN);
         if (libro == null) {
@@ -56,17 +56,17 @@ public class ArbolB {
         }
     }
 
-    private Libro buscarLibroPorISBN(String ISBN) {
+    private Libro buscarLibroPorISBN(int ISBN) {
         return buscarLibroPorISBN(this.raiz, ISBN);
     }
 
-    private Libro buscarLibroPorISBN(Nodo nodo, String ISBN) {
+    private Libro buscarLibroPorISBN(Nodo nodo, int ISBN) {
         int i = 0;
-        while (i < nodo.libros.size() && ISBN.compareTo(nodo.libros.get(i).getISBN()) > 0) {
+        while (i < nodo.libros.size() && ISBN > nodo.libros.get(i).getISBN()) {
             i++;
         }
 
-        if (i < nodo.libros.size() && ISBN.equals(nodo.libros.get(i).getISBN())) {
+        if (i < nodo.libros.size() && ISBN == nodo.libros.get(i).getISBN()) {
             return nodo.libros.get(i);
         }
 
@@ -83,12 +83,12 @@ public class ArbolB {
         return raiz.nodoValido();
     }
     public void actualizarLibro(JSONObject json) {
-        String ISBN = json.getString("isbn");
+        int ISBN = json.getInt("isbn");
         Nodo nodo = raiz.BuscarNodo(new Libro(ISBN, "", "", 0, 0));
         if (nodo != null) {
             for (int i = 0; i < nodo.libros.size(); i++) {
                 Libro libro = nodo.libros.get(i);
-                if (libro.getISBN().equals(ISBN)) {
+                if (libro.getISBN() == ISBN) {
                     if (json.has("name")) {
                         libro.setTitulo(json.getString("name"));
                     }
@@ -104,6 +104,8 @@ public class ArbolB {
                     break;
                 }
             }
+        }else{
+            System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque no fue encontrado.");
         }
     }
 
