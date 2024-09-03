@@ -65,11 +65,12 @@ public class Main {
                 //Leer archivo
                 try (BufferedReader br = new BufferedReader(new FileReader(archivoSeleccionado))) {
                     //Leer archivo línea por línea
+                    int procesados = 0;
                     String linea;
                     while((linea = br.readLine()) != null){
                         ultimaLinea = linea;
                         //Si la linea comienza con un INSERT
-
+                        procesados++;
                         if(linea.startsWith("INSERT;")){
                             //Extraer datos del JSON
                             String datos = linea.substring(7).trim();
@@ -115,6 +116,7 @@ public class Main {
                                 System.out.println("No se encontraron libros con el nombre " + json.getString("name"));
                             }
                         }
+                        System.out.println("Linea No. " + procesados);
                     }
                 }
                 System.out.println("CSV importado correctamente");

@@ -25,7 +25,19 @@ public class ArbolB {
             raiz.libros.add(libro);
         }
         else{
-            raiz.Insertar(libro);
+            if(raiz.libros.size() == raiz.maxKeys){
+                Nodo s = new Nodo(orden, false, raiz.arbol);
+                s.hijos.add(raiz);
+                s.dividirNodo(0, raiz);
+                int i = 0;
+                if(s.libros.get(0).getISBN() < libro.getISBN()){
+                    i++;
+                }
+                s.hijos.get(i).InsertarNoLleno(libro);
+                raiz = s;
+            }else{
+                raiz.InsertarNoLleno(libro);
+            }
         }
     }
     public void Traverse(){
@@ -43,7 +55,7 @@ public class ArbolB {
         // Buscar el libro en el árbol por ISBN
         Libro libro = buscarLibroPorISBN(ISBN);
         if (libro == null) {
-            System.out.println("El libro con ISBN " + ISBN + " no se encuentra en el árbol.");
+            // System.out.println("El libro con ISBN " + ISBN + " no se encuentra en el árbol.");
             return;
         }
 
@@ -104,10 +116,10 @@ public class ArbolB {
                     }
                 }
             }else{
-                System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque no fue encontrado.");
+                // System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque no fue encontrado.");
             }
         }else{
-            System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque el árbol está vacío.");
+            // System.out.println("No se pudo editar el libro con el ISBN " + ISBN + " porque el árbol está vacío.");
         }
     }
 
