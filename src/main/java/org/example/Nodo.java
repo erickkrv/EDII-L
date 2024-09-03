@@ -89,59 +89,98 @@ public class Nodo {
 
     public void Insertar(Libro libro) {
         if (libros.size() == maxKeys) {
-            InsertarLleno(libro);
         } else {
             InsertarNoLleno(libro);
         }
     }
 
-    private void InsertarLleno(Libro libro) {
-        int i = libros.size() - 1;
-        if (IsLeaf) {
-            while (i >= 0 && libros.get(i).getISBN() > libro.getISBN()) {
-                i--;
-            }
-            libros.add(i + 1, libro);
-        } else {
-            while (i >= 0 && libros.get(i).getISBN() > libro.getISBN()) {
-                i--;
-            }
-            i++;
-            if (hijos.get(i).libros.size() == maxKeys) {
-                hijos.get(i).InsertarLleno(libro);
-            } else {
-                hijos.get(i).InsertarNoLleno(libro);
-            }
-        }
+//    private void InsertarLleno(Libro libro) {
+//        Nodo nuevoNodo = new Nodo(orden, IsLeaf, arbol);
+//        nuevoNodo.libros = new ArrayList<>();
+//        nuevoNodo.hijos = new ArrayList<>();
+//
+//        for (int i = 0; i < minKeys; i++) {
+//            nuevoNodo.libros.add(libros.get(i));
+//        }
+//
+//        if (!IsLeaf) {
+//            for (int i = 0; i <= minKeys; i++) {
+//                nuevoNodo.hijos.add(hijos.get(i));
+//            }
+//        }
+//
+//        int i = minKeys;
+//        while (i < maxKeys && libros.get(i).getISBN() < libro.getISBN()) {
+//            i++;
+//        }
+//
+//        libros.add(i, libro);
+//
+//        if (IsLeaf) {
+//            nuevoNodo.IsLeaf = true;
+//        }
+//
+//        if (i == minKeys) {
+//            return;
+//        }
+//
+//        if (i < minKeys) {
+//            i++;
+//        }
+//
+//        for (int j = i; j < maxKeys; j++) {
+//            nuevoNodo.libros.add(libros.get(j));
+//        }
+//
+//        for (int j = i; j <= maxKeys; j++) {
+//            libros.remove(minKeys);
+//        }
+//
+//        if (!IsLeaf) {
+//            for (int j = i; j <= maxKeys; j++) {
+//                nuevoNodo.hijos.add(hijos.get(j));
+//            }
+//
+//            for (int j = i; j < maxKeys; j++) {
+//                hijos.remove(minKeys);
+//            }
+//        }
+//
+//        if (this == arbol.raiz) {
+//            Nodo nuevaRaiz = new Nodo(orden, false, arbol);
+//            nuevaRaiz.libros = new ArrayList<>();
+//            nuevaRaiz.hijos = new ArrayList<>();
+//            nuevaRaiz.libros.add(libros.get(minKeys));
+//            nuevaRaiz.hijos.add(this);
+//            nuevaRaiz.hijos.add(nuevoNodo);
+//            arbol.raiz = nuevaRaiz;
+//        } else {
+//            Nodo padre = encontrarPadre(arbol.raiz, this);
+//            int indicePadre = encontrarIndice(padre, this);
+//            padre.dividirNodo(indicePadre, nuevoNodo);
+//        }
+//    }
 
-        // Divide
-        if (arbol.raiz == this) {
-            Nodo nuevaRaiz = new Nodo(orden, false, this.arbol);
-            nuevaRaiz.hijos.add(this);
-            nuevaRaiz.dividirNodo(0, this);
-            arbol.raiz = nuevaRaiz;
-        } else {
-            Nodo padre = encontrarPadre(arbol.raiz, this);
-            padre.dividirNodo(encontrarIndice(padre, this), this);
+    public void dividirNodo(int indiceHijo, Nodo nodoSeparado) {
+        Nodo z = new Nodo(nodoSeparado.orden, nodoSeparado.IsLeaf, arbol);
+        for(int j = 0;   j < minKeys; j++){
+            z.libros.add(nodoSeparado.libros.get(j + minKeys + 1));
         }
+        if(!nodoSeparado.IsLeaf){
+            for(int j = 0; j < minKeys + 1; j++){
+                z.hijos.add(nodoSeparado.hijos.get(j + minKeys + 1));
+            }
+        }
+        for(int j = libros.size(); j < indiceHijo; j--){
+            hijos.set(j + 1, hijos.get(j));
+        }
+        hijos.add(indiceHijo + 1, z);
+        for(int j = libros.size() - 1; j >= indiceHijo; j--){
+            libros.set(j + 1, libros.get(j));
+        }
+        libros.add(indiceHijo, nodoSeparado.libros.get(minKeys));
     }
 
-    private void dividirNodo(int indiceHijo, Nodo nodoSeparado) {
-        int indiceMedio = orden / 2;
-        Nodo nuevoNodo = new Nodo(nodoSeparado.orden, nodoSeparado.IsLeaf, arbol);
-
-        nuevoNodo.libros.addAll(nodoSeparado.libros.subList(indiceMedio + 1, nodoSeparado.libros.size()));
-        nodoSeparado.libros.subList(indiceMedio + 1, nodoSeparado.libros.size()).clear();
-
-        if (!nodoSeparado.IsLeaf) {
-            nuevoNodo.hijos.addAll(nodoSeparado.hijos.subList(indiceMedio + 1, nodoSeparado.hijos.size()));
-            nodoSeparado.hijos.subList(indiceMedio + 1, nodoSeparado.hijos.size()).clear();
-        }
-
-        hijos.add(indiceHijo + 1, nuevoNodo);
-        libros.add(indiceHijo, nodoSeparado.libros.get(indiceMedio));
-        nodoSeparado.libros.remove(indiceMedio);
-    }
 
 
     private Nodo encontrarPadre(Nodo nodo, Nodo hijo) {
@@ -169,10 +208,11 @@ public class Nodo {
         return -1;
     }
 
-    private void InsertarNoLleno(Libro libro) {
+    public void InsertarNoLleno(Libro libro) {
         int i = libros.size() - 1;
         if (IsLeaf) {
             while (i >= 0 && libros.get(i).getISBN() > libro.getISBN()) {
+                libros.add(i + 1, libros.get(i));
                 i--;
             }
             libros.add(i + 1, libro);
@@ -180,12 +220,13 @@ public class Nodo {
             while (i >= 0 && libros.get(i).getISBN() > libro.getISBN()) {
                 i--;
             }
-            i++;
-            if (hijos.get(i).libros.size() == maxKeys) {
-                hijos.get(i).InsertarLleno(libro);
-            } else {
-                hijos.get(i).InsertarNoLleno(libro);
+            if (hijos.get(i+1).libros.size() == maxKeys) {
+                dividirNodo(i + 1, hijos.get(i+1));
+                if(libros.get(i+1).getISBN() < libro.getISBN()){
+                    i++;
+                }
             }
+            hijos.get(i+1).InsertarNoLleno(libro);
         }
     }
 
@@ -200,7 +241,6 @@ public class Nodo {
             }
         } else {
             if (IsLeaf) {
-                System.out.println("El libro no se encuentra en el árbol");
                 return;
             }
 
@@ -322,11 +362,16 @@ public class Nodo {
         Nodo hijoActual = hijos.get(idx);
         Nodo hermanoSiguiente = hijos.get(idx + 1);
 
+        // Mover la clave del padre hacia el hijo actual
         hijoActual.libros.add(libros.get(idx));
         hijoActual.libros.addAll(hermanoSiguiente.libros);
-        hijoActual.hijos.addAll(hermanoSiguiente.hijos);
+
+        if (!hijoActual.IsLeaf) {
+            hijoActual.hijos.addAll(hermanoSiguiente.hijos);
+        }
 
         hijos.remove(idx + 1);
         libros.remove(idx);
     }
+
 }
