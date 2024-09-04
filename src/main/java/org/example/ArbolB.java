@@ -12,13 +12,6 @@ public class ArbolB {
         raiz = null;
         this.orden = orden;
     }
-    public void PrintTree(){
-        if(raiz != null){
-            raiz.imprimirArbol(0);
-        }else{
-            System.out.println("El arbol esta vacio");
-        }
-    }
     public void Insert(Libro libro){
         if(raiz == null){
             raiz = new Nodo(orden, true, this);
@@ -40,31 +33,23 @@ public class ArbolB {
             }
         }
     }
-    public void Traverse(){
-        if(raiz != null){
-            raiz.Traverse();
-        }
-    }
-    public Nodo BuscarNodo(Libro libro){
-        if(raiz != null){
-            return raiz.BuscarNodo(libro);
-        }
-        return null;
-    }
     public void eliminar(long ISBN) {
         // Buscar el libro en el árbol por ISBN
         Libro libro = buscarLibroPorISBN(ISBN);
-        if (libro == null) {
-            // System.out.println("El libro con ISBN " + ISBN + " no se encuentra en el árbol.");
+        if(raiz == null){
             return;
         }
-
-        // Llamar al método de eliminación del nodo con el libro encontrado
-        this.raiz.Eliminar(libro);
-
-        // Si la raíz está vacía y no es una hoja, hacer que la raíz sea su hijo
-        if (this.raiz.libros.isEmpty() && !this.raiz.IsLeaf) {
-            this.raiz = this.raiz.hijos.get(0);
+        if(libro != null){
+            raiz.Eliminar(libro);
+        }else{
+            return;
+        }
+        if(raiz.libros.size() == 0){
+            if(raiz.IsLeaf){
+                raiz = null;
+            }else{
+                raiz = raiz.hijos.get(0);
+            }
         }
     }
 
