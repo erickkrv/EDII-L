@@ -4,9 +4,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -66,16 +64,22 @@ public class Main {
                 try (BufferedReader br = new BufferedReader(new FileReader(archivoSeleccionado))) {
                     //Leer archivo línea por línea
                     int procesados = 0;
+                    int insertados = 0;
+                    String operacionActual = "";
                     String linea;
                     while((linea = br.readLine()) != null){
                         ultimaLinea = linea;
                         //Si la linea comienza con un INSERT
-                        procesados++;
+                       procesados++;
                         if(linea.startsWith("INSERT;")){
+                            operacionActual = "INSERT";
+                            System.out.println("Procesados: " + procesados + " Operación Actual: " + operacionActual);
+                            insertados++;
                             //Extraer datos del JSON
                             String datos = linea.substring(7).trim();
 
                             JSONObject json = new JSONObject(datos);
+                            String isbnActual = json.getString("isbn");
                             //Crear libro
                             Libro libro = new Libro(
                                     json.getLong("isbn"),
@@ -90,13 +94,18 @@ public class Main {
                         }
                         //Si la línea comienza con un DELETE
                         if(linea.startsWith("DELETE;")){
+                            operacionActual = "DELETE";
+                            System.out.println("Procesados: " + procesados + " Operación Actual: " + operacionActual);
                             String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
+                            String isbnActual = json.getString("isbn");
                             //Eliminar libro del árbol
                             arbol.eliminar(json.getLong("isbn"));
                         }
                         //Si la línea comienza con un PATCH
                         if(linea.startsWith("PATCH;")){
+                            operacionActual = "PATCH";
+                            System.out.println("Procesados: " + procesados + " Operación Actual: " + operacionActual);
                             String datos = linea.substring(6).trim();
                             JSONObject json = new JSONObject(datos);
                             //Actualizar libro en el árbol
@@ -104,19 +113,25 @@ public class Main {
                         }
                         //Si la línea comienza con un SEARCH
                         if(linea.startsWith("SEARCH;")){
+                            operacionActual = "SEARCH";
+                            System.out.println("Procesados: " + procesados + " Operación Actual: " + operacionActual);
                             String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
                             //Buscar libro en el árbol
                             List<Libro> libros = arbol.buscarLibro(json.getString("name"));
-                            //Imprimir libros encontrados
-                            for(Libro libro : libros){
-                                System.out.println(libro);
-                            }
-                            if(libros.isEmpty()){
-                                System.out.println("No se encontraron libros con el nombre " + json.getString("name"));
+                            // Definir el nombre del archivo de salida
+                            String nombreArchivo = "libros_encontrados.txt";
+
+                            try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
+                                // Escribir cada libro en una línea del archivo
+                                for (Libro libro : libros) {
+                                    writer.write(libro.toString()); // Suponiendo que toString() devuelve el formato deseado
+                                    writer.newLine(); // Añadir nueva línea
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
-                        System.out.println("Linea No. " + procesados);
                     }
                 }
                 System.out.println("CSV importado correctamente");

@@ -162,23 +162,18 @@ public class Nodo {
 //    }
 
     public void dividirNodo(int indiceHijo, Nodo nodoSeparado) {
-        Nodo z = new Nodo(nodoSeparado.orden, nodoSeparado.IsLeaf, arbol);
-        for(int j = 0;   j < minKeys; j++){
-            z.libros.add(nodoSeparado.libros.get(j + minKeys + 1));
-        }
+        int indiceMedio = orden / 2;
+        Nodo nuevoNodo = new Nodo(nodoSeparado.orden, nodoSeparado.IsLeaf, arbol);
+        nuevoNodo.libros.addAll(nodoSeparado.libros.subList(indiceMedio + 1, nodoSeparado.libros.size() - (indiceMedio - 1)));
+        nodoSeparado.libros.subList(indiceMedio, nodoSeparado.libros.size() - (indiceMedio - 1)).clear();
+
         if(!nodoSeparado.IsLeaf){
-            for(int j = 0; j < minKeys + 1; j++){
-                z.hijos.add(nodoSeparado.hijos.get(j + minKeys + 1));
-            }
+            nuevoNodo.hijos.addAll(nodoSeparado.hijos.subList(indiceMedio + 1, nodoSeparado.hijos.size() - (indiceMedio - 1)));
+            nodoSeparado.hijos.subList(indiceMedio + 1, nodoSeparado.hijos.size() - (indiceMedio - 1)).clear();
         }
-        for(int j = libros.size(); j < indiceHijo; j--){
-            hijos.set(j + 1, hijos.get(j));
-        }
-        hijos.add(indiceHijo + 1, z);
-        for(int j = libros.size() - 1; j >= indiceHijo; j--){
-            libros.set(j + 1, libros.get(j));
-        }
-        libros.add(indiceHijo, nodoSeparado.libros.get(minKeys));
+        hijos.add(indiceHijo + 1, nuevoNodo);
+        libros.add(indiceHijo, nodoSeparado.libros.get(indiceMedio));
+        nodoSeparado.libros.remove(indiceMedio);
     }
 
 
@@ -212,7 +207,6 @@ public class Nodo {
         int i = libros.size() - 1;
         if (IsLeaf) {
             while (i >= 0 && libros.get(i).getISBN() > libro.getISBN()) {
-                libros.add(i + 1, libros.get(i));
                 i--;
             }
             libros.add(i + 1, libro);
