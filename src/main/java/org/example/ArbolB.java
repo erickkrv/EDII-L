@@ -13,24 +13,77 @@ public class ArbolB {
         this.orden = orden;
     }
     public void Insert(Libro libro){
-        if(raiz == null){
+        Nodo _raiz = raiz;
+        if(_raiz == null){
             raiz = new Nodo(orden, true, this);
             raiz.libros.add(libro);
+        }else {
+            if(_raiz.libros.size() == raiz.maxKeys){
+                Nodo nuevaRaiz = new Nodo(orden, false, this);
+                nuevaRaiz.hijos.add(_raiz);
+                dividirHijo(nuevaRaiz, 0);
+                raiz = nuevaRaiz;
+            }
+            insertarNoLleno(_raiz, libro);
+        }
+    }
+    private void insertarNoLleno(Nodo nodo, Libro libro){
+        if(nodo.IsLeaf){
+            int i = nodo.libros.size() - 1;
+            while(i >= 0 && nodo.libros.get(i).getISBN() > libro.getISBN()){
+                i--;
+            }
+            nodo.libros.add(i+1, libro);
+
+            if(nodo.libros.size() > nodo.maxKeys){
+                dividirNodo(nodo);
+            }
         }
         else{
-            if(raiz.libros.size() == raiz.maxKeys){
-                Nodo s = new Nodo(orden, false, raiz.arbol);
-                s.hijos.add(raiz);
-                s.dividirNodo(0, raiz);
-                int i = 0;
-                if(s.libros.get(0).getISBN() < libro.getISBN()){
+            int i = nodo.libros.size() - 1;
+            while(i >= 0 && nodo.libros.get(i).getISBN() > libro.getISBN()){
+                i--;
+            }
+            i++;
+            if(nodo.hijos.get(i).libros.size() == nodo.maxKeys + 1){
+                dividirHijo(nodo, i);
+                if(nodo.libros.get(i).getISBN() < libro.getISBN()){
                     i++;
                 }
-                s.hijos.get(i).InsertarNoLleno(libro);
-                raiz = s;
-            }else{
-                raiz.InsertarNoLleno(libro);
             }
+            insertarNoLleno(nodo.hijos.get(i), libro);
+        }
+    }
+    private void dividirNodo(Nodo nodo){
+        if(nodo == raiz){
+            Nodo nuevaRaiz = new Nodo(orden, false, this);
+            nuevaRaiz.hijos.add(nodo);
+            raiz = nuevaRaiz;
+            dividirHijo(nuevaRaiz, 0);
+        }else{
+            Nodo padre = nodo.encontrarPadre(raiz, nodo);
+            int i = nodo.encontrarIndice(padre, nodo);
+            dividirHijo(padre, i);
+            if(padre.libros.size() > padre.maxKeys){
+                dividirNodo(padre);
+            }
+        }
+    }
+    private void dividirHijo(Nodo padre, int index){
+        int orden = this.orden;
+        Nodo hijo = padre.hijos.get(index);
+        Nodo nuevoHijo = new Nodo(orden, hijo.IsLeaf, this);
+
+        int mitad = (orden - 1) / 2;
+        padre.libros.add(index, hijo.libros.get(mitad));
+        padre.hijos.add(index + 1, nuevoHijo);
+
+        nuevoHijo.libros.addAll(hijo.libros.subList(mitad + 1, orden - 1));
+        hijo.libros.subList(mitad, orden - 1).clear();
+
+        if(!hijo.IsLeaf){
+            nuevoHijo.hijos.addAll(hijo.hijos.subList(mitad + 1, orden));
+            hijo.hijos.subList(mitad + 1, orden).clear();
         }
     }
     public void eliminar(long ISBN) {

@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62c499c1-9405-489b-80db-283e3116f60f" name="Changes" comment="fallo linea 9000 / revisar">
+    <list default="true" id="62c499c1-9405-489b-80db-283e3116f60f" name="Changes" comment="correcciones varias // aun con fallo l.9000">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ArbolB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ArbolB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Nodo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Nodo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +73,12 @@
       <workItem from="1725410386306" duration="195000" />
       <workItem from="1725410684322" duration="2216000" />
       <workItem from="1725412918893" duration="38000" />
-      <workItem from="1725412998418" duration="5461000" />
+      <workItem from="1725412998418" duration="6036000" />
+      <workItem from="1725419121260" duration="578000" />
+      <workItem from="1725419712600" duration="77000" />
+      <workItem from="1725420411561" duration="109000" />
+      <workItem from="1725420534163" duration="62000" />
+      <workItem from="1725491695057" duration="3596000" />
     </task>
     <task id="LOCAL-00001" summary="Creación">
       <option name="closed" value="true" />
@@ -130,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1725417895463</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="correcciones varias // aun con fallo l.9000">
+      <option name="closed" value="true" />
+      <created>1725418613438</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1725418613438</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,19 +169,10 @@
     <MESSAGE value="correcciones varias // pendiente revisar orden" />
     <MESSAGE value="insercion de 0 // falta corregir velocidad" />
     <MESSAGE value="fallo linea 9000 / revisar" />
-    <option name="LAST_COMMIT_MESSAGE" value="fallo linea 9000 / revisar" />
+    <MESSAGE value="correcciones varias // aun con fallo l.9000" />
+    <option name="LAST_COMMIT_MESSAGE" value="correcciones varias // aun con fallo l.9000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <condition expression="isbnActual.equals(&quot;9780608376370&quot;)" language="JAVA" />
-          <url>file://$PROJECT_DIR$/src/main/java/org/example/Main.java</url>
-          <line>102</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="org.example.Nodo" memberName="orden" />
