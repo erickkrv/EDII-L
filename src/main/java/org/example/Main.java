@@ -4,9 +4,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,82 +45,88 @@ public class Main {
             }
         }
     }
-    private static void importarLibros(){
+    private static void importarLibros() {
         String ultimaLinea = "";
-        //Crear un JFileChooser
         JFileChooser archivo = new JFileChooser();
-        //Filtro para archivos CSV
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos CSV", "csv");
         archivo.setFileFilter(filtro);
 
-        //Mostrar diálogo para abrir archivo
         int seleccion = archivo.showOpenDialog(null);
-        //Si el usuario selecciona un archivo
-        if(seleccion == JFileChooser.APPROVE_OPTION){
-            try{
-                //Obtener archivo seleccionado
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            try {
                 File archivoSeleccionado = archivo.getSelectedFile();
-                //Leer archivo
-                try (BufferedReader br = new BufferedReader(new FileReader(archivoSeleccionado))) {
-                    //Leer archivo línea por línea
-                    int procesados = 0;
-                    String linea;
-                    while((linea = br.readLine()) != null){
-                        ultimaLinea = linea;
-                        //Si la linea comienza con un INSERT
-                        procesados++;
-                        if(linea.startsWith("INSERT;")){
-                            //Extraer datos del JSON
-                            String datos = linea.substring(7).trim();
+                // Leer archivo
+                try (BufferedReader br = new BufferedReader(new FileReader(archivoSeleccionado));
+                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("libros_encontrados.txt", true)))) {
 
+                    int procesados = 0;
+                    int insertados = 0;
+                    int busquedadHechas = 0;
+                    String operacionActual = "";
+                    String linea;
+
+                    StringBuilder sb = new StringBuilder();
+                    while ((linea = br.readLine()) != null) {
+                        ultimaLinea = linea;
+                        procesados++;
+
+                        if (linea.startsWith("INSERT;")) {
+                            operacionActual = "INSERT";
+                            insertados++;
+                            String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
-                            //Crear libro
+                            String isbnActual = json.getString("isbn");
+                            // Crear libro
                             Libro libro = new Libro(
                                     json.getLong("isbn"),
                                     json.getString("name"),
                                     json.getString("author"),
-                                    // json.getString("category"),
                                     json.getDouble("price"),
                                     json.getInt("quantity")
                             );
-                            //Insertar libro en el árbol
+                            // Insertar libro en el árbol
                             arbol.Insert(libro);
                         }
-                        //Si la línea comienza con un DELETE
-                        if(linea.startsWith("DELETE;")){
+
+                        if (linea.startsWith("DELETE;")) {
+                            operacionActual = "DELETE";
                             String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
-                            //Eliminar libro del árbol
+                            String isbnActual = json.getString("isbn");
                             arbol.eliminar(json.getLong("isbn"));
                         }
-                        //Si la línea comienza con un PATCH
-                        if(linea.startsWith("PATCH;")){
+
+                        if (linea.startsWith("PATCH;")) {
+                            operacionActual = "PATCH";
                             String datos = linea.substring(6).trim();
                             JSONObject json = new JSONObject(datos);
-                            //Actualizar libro en el árbol
                             arbol.actualizarLibro(json);
                         }
-                        //Si la línea comienza con un SEARCH
-                        if(linea.startsWith("SEARCH;")){
+
+                        if (linea.startsWith("SEARCH;")) {
+                            operacionActual = "SEARCH";
                             String datos = linea.substring(7).trim();
                             JSONObject json = new JSONObject(datos);
-                            //Buscar libro en el árbol
+
+                            // Buscar libro en el árbol
                             List<Libro> libros = arbol.buscarLibro(json.getString("name"));
-                            //Imprimir libros encontrados
-                            for(Libro libro : libros){
-                                System.out.println(libro);
-                            }
-                            if(libros.isEmpty()){
-                                System.out.println("No se encontraron libros con el nombre " + json.getString("name"));
+                            busquedadHechas++;
+                            System.out.println(busquedadHechas + " busquedas hechas");
+
+                            if (!libros.isEmpty()) {
+                                for (Libro libro : libros) {
+                                    sb.append(libro.toString()).append("\n");
+                                }
                             }
                         }
-                        System.out.println("Linea No. " + procesados);
                     }
+                    writer.write(sb.toString());
                 }
                 System.out.println("CSV importado correctamente");
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.err.println("Error al importar los libros: " + e.getMessage() + " en la línea: " + ultimaLinea);
             }
         }
     }
+
 }

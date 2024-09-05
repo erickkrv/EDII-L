@@ -12,59 +12,97 @@ public class ArbolB {
         raiz = null;
         this.orden = orden;
     }
-    public void PrintTree(){
-        if(raiz != null){
-            raiz.imprimirArbol(0);
-        }else{
-            System.out.println("El arbol esta vacio");
-        }
-    }
     public void Insert(Libro libro){
-        if(raiz == null){
+        Nodo _raiz = raiz;
+        if(_raiz == null){
             raiz = new Nodo(orden, true, this);
             raiz.libros.add(libro);
+        }else {
+            if(_raiz.libros.size() == raiz.maxKeys){
+                Nodo nuevaRaiz = new Nodo(orden, false, this);
+                nuevaRaiz.hijos.add(_raiz);
+                dividirHijo(nuevaRaiz, 0);
+                raiz = nuevaRaiz;
+            }
+            insertarNoLleno(_raiz, libro);
+        }
+    }
+    private void insertarNoLleno(Nodo nodo, Libro libro){
+        if(nodo.IsLeaf){
+            int i = nodo.libros.size() - 1;
+            while(i >= 0 && nodo.libros.get(i).getISBN() > libro.getISBN()){
+                i--;
+            }
+            nodo.libros.add(i+1, libro);
+
+            if(nodo.libros.size() > nodo.maxKeys){
+                dividirNodo(nodo);
+            }
         }
         else{
-            if(raiz.libros.size() == raiz.maxKeys){
-                Nodo s = new Nodo(orden, false, raiz.arbol);
-                s.hijos.add(raiz);
-                s.dividirNodo(0, raiz);
-                int i = 0;
-                if(s.libros.get(0).getISBN() < libro.getISBN()){
+            int i = nodo.libros.size() - 1;
+            while(i >= 0 && nodo.libros.get(i).getISBN() > libro.getISBN()){
+                i--;
+            }
+            i++;
+            if(nodo.hijos.get(i).libros.size() == nodo.maxKeys + 1){
+                dividirHijo(nodo, i);
+                if(nodo.libros.get(i).getISBN() < libro.getISBN()){
                     i++;
                 }
-                s.hijos.get(i).InsertarNoLleno(libro);
-                raiz = s;
-            }else{
-                raiz.InsertarNoLleno(libro);
+            }
+            insertarNoLleno(nodo.hijos.get(i), libro);
+        }
+    }
+    private void dividirNodo(Nodo nodo){
+        if(nodo == raiz){
+            Nodo nuevaRaiz = new Nodo(orden, false, this);
+            nuevaRaiz.hijos.add(nodo);
+            raiz = nuevaRaiz;
+            dividirHijo(nuevaRaiz, 0);
+        }else{
+            Nodo padre = nodo.encontrarPadre(raiz, nodo);
+            int i = nodo.encontrarIndice(padre, nodo);
+            dividirHijo(padre, i);
+            if(padre.libros.size() > padre.maxKeys){
+                dividirNodo(padre);
             }
         }
     }
-    public void Traverse(){
-        if(raiz != null){
-            raiz.Traverse();
+    private void dividirHijo(Nodo padre, int index){
+        int orden = this.orden;
+        Nodo hijo = padre.hijos.get(index);
+        Nodo nuevoHijo = new Nodo(orden, hijo.IsLeaf, this);
+
+        int mitad = (orden - 1) / 2;
+        padre.libros.add(index, hijo.libros.get(mitad));
+        padre.hijos.add(index + 1, nuevoHijo);
+
+        nuevoHijo.libros.addAll(hijo.libros.subList(mitad + 1, orden - 1));
+        hijo.libros.subList(mitad, orden - 1).clear();
+
+        if(!hijo.IsLeaf){
+            nuevoHijo.hijos.addAll(hijo.hijos.subList(mitad + 1, orden));
+            hijo.hijos.subList(mitad + 1, orden).clear();
         }
-    }
-    public Nodo BuscarNodo(Libro libro){
-        if(raiz != null){
-            return raiz.BuscarNodo(libro);
-        }
-        return null;
     }
     public void eliminar(long ISBN) {
         // Buscar el libro en el árbol por ISBN
         Libro libro = buscarLibroPorISBN(ISBN);
-        if (libro == null) {
-            // System.out.println("El libro con ISBN " + ISBN + " no se encuentra en el árbol.");
+        if(raiz == null){
             return;
         }
-
-        // Llamar al método de eliminación del nodo con el libro encontrado
-        this.raiz.Eliminar(libro);
-
-        // Si la raíz está vacía y no es una hoja, hacer que la raíz sea su hijo
-        if (this.raiz.libros.isEmpty() && !this.raiz.IsLeaf) {
-            this.raiz = this.raiz.hijos.get(0);
+        if(libro != null){
+            raiz.Eliminar(libro);
+        }else{
+            return;
+        }
+        if(raiz.libros.size() == 0){
+            if(raiz.IsLeaf){
+                raiz = null;
+            }else{
+                raiz = raiz.hijos.get(0);
+            }
         }
     }
 
